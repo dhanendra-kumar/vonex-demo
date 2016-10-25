@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title th:text="${'Vonex - Demo'}"></title>
+        <th:block th:include="layouts/mainLayout :: header-scripts-and-stylesheets"></th:block>
+    </head>
+    <body>
+        <th:block th:include="layouts/mainLayout :: main-header"></th:block>
+        <div class="main">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12" style="text-align: center">
+                        <a href="javascript: void(0)" id="get-answer" class="btn btn-primary" th:attr="data-url=@{/answer}">
+                            Get Answer
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" style="text-align: center">
+                        <div id="answer-view"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            jQuery(document).on("click", "#get-answer", function() {
+                var url = jQuery(this).data("url");
+                jQuery.ajax({
+                    url: url,
+                    type: 'post',
+                    success: function (data) {
+                        jQuery("#answer-view").html(data);
+                    }
+                });
+            });
+            /*]]>*/
+        </script>
+        <th:block th:include="layouts/mainLayout :: main-footer"></th:block>
+    </body>
+</html>

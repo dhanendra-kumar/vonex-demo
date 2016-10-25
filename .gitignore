@@ -1,0 +1,10 @@
+.gradle/
+.idea/
+.idea/*
+build/
+*.iml
+*.ipr
+*.iws
+.idea/misc.xml
+.idea/workspace.xml
+classes/**

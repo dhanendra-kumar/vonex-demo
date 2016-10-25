@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -26,10 +27,10 @@ public class ResponseService {
     @Autowired
     ObjectMapper objectMapper;
 
-    public String getRequestToken(LocalDateTime requestStartTime) {
+    public String getRequestToken(LocalDateTime requestStartTime, Map<String, String> headers) {
         String requestToken = "";
         do {
-            HttpResponseDTO response = httpBuilderService.httpGet(API_HOST_NAME + REQUEST_TOKRN_END_POINT, null);
+            HttpResponseDTO response = httpBuilderService.httpGet(API_HOST_NAME + REQUEST_TOKRN_END_POINT, headers);
             if (response.getStatus() == 200) {
                 try {
                     Map jsonRespone = objectMapper.readValue(response.getText(), Map.class);
@@ -45,11 +46,11 @@ public class ResponseService {
         return requestToken;
     }
 
-    public String askQuestion(String requestToken, LocalDateTime requestStartTime) {
+    public String askQuestion(String requestToken, LocalDateTime requestStartTime, Map<String, String> headers) {
         String queryParams = "?request=" + requestToken;
         String answerToken = "";
         while (LocalDateTime.now().minusSeconds(50).isBefore(requestStartTime)) {
-            HttpResponseDTO response = httpBuilderService.httpGet(API_HOST_NAME + ASK_END_POINT + queryParams, null);
+            HttpResponseDTO response = httpBuilderService.httpGet(API_HOST_NAME + ASK_END_POINT + queryParams, headers);
             if (response.getStatus() == 200) {
                 try {
                     Map jsonRespone = objectMapper.readValue(response.getText(), Map.class);
@@ -67,11 +68,11 @@ public class ResponseService {
         return answerToken;
     }
 
-    public String getAnswerResponse(String answerToken, LocalDateTime requestStartTime) {
+    public String getAnswerResponse(String answerToken, LocalDateTime requestStartTime, Map<String, String> headers) {
         String queryParams = "?request=" + answerToken;
         String answer = "";
         while (LocalDateTime.now().minusSeconds(50).isBefore(requestStartTime)) {
-            HttpResponseDTO response = httpBuilderService.httpGet(API_HOST_NAME + ANSWER_END_POINT + queryParams, null);
+            HttpResponseDTO response = httpBuilderService.httpGet(API_HOST_NAME + ANSWER_END_POINT + queryParams, headers);
             if (response.getStatus() == 200) {
                 try {
                     Map jsonRespone = objectMapper.readValue(response.getText(), Map.class);
@@ -87,14 +88,16 @@ public class ResponseService {
         return answer;
     }
 
-    public String getAnswer() {
+    public String getAnswer(String userAgent) {
         LocalDateTime requestStartTime = LocalDateTime.now();
-        String requestToken = getRequestToken(requestStartTime);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", userAgent + " Vonex Request");
+        String requestToken = getRequestToken(requestStartTime, headers);
         String answer = "";
         if (!ObjectUtils.isEmpty(requestToken)) {
-            String answerToken = askQuestion(requestToken, requestStartTime);
+            String answerToken = askQuestion(requestToken, requestStartTime, headers);
             if(!ObjectUtils.isEmpty(answerToken)) {
-                answer = getAnswerResponse(answerToken, requestStartTime);
+                answer = getAnswerResponse(answerToken, requestStartTime, headers);
             }
         }
         if (ObjectUtils.isEmpty(answer)) {

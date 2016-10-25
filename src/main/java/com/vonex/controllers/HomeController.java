@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class HomeController {
 
@@ -18,7 +20,8 @@ public class HomeController {
 
 	@RequestMapping("/answer")
 	@ResponseBody
-	public String answer() {
-		return responseService.getAnswer();
+	public String answer(HttpServletRequest request) {
+		String userAgent = request.getHeader("User-Agent");
+		return responseService.getAnswer(userAgent);
 	}
 }

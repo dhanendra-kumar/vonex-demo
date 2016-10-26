@@ -10,9 +10,9 @@ The application is to perform an initial request, then using the key given, perf
 #### Prerequisites
 
 * JDK Version 1.8
-* Gradle
+* Gradle 2.9
 
 ### Run
 
 Spring Boot can be started with gradle use the following command
-> gradlew bootRun
+> gradle bootRun

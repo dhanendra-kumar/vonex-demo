@@ -74,7 +74,6 @@ public class HttpBuilderService {
         if (!ObjectUtils.isEmpty(parameters)) {
             try {
                 HttpEntity entity = new StringEntity(jsonConverter.serialize(parameters).orElse(""), "UTF-8");
-//				log.info("---- parameters [ ${(parameters as JSON)} ]");
                 post.setEntity(entity);
             } catch (Exception e) {
                 e.printStackTrace();
